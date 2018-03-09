@@ -31,7 +31,7 @@ from mlens.ensemble import SuperLearner
 from texttable import Texttable
 
 #read in data and parse
-files = [['obtrain.csv','obtest.csv']]
+files = [['data/obtrain.csv','data/obtest.csv']]
 train_df = []
 test_df = []
 combine = []
@@ -60,7 +60,7 @@ for i in range(len(combine)):
 seed = 9880
 
 #feature selection
-selector = SelectKBest(f_classif, k=20)
+selector = SelectKBest(f_classif, k=150)
 for i in range(len(combine)):
 	X_train[i] = selector.fit_transform(X_train[i], Y_train[i])
 	X_test[i] = X_test[i][selector.get_support(indices=True)]
@@ -84,7 +84,7 @@ for i in range(len(combine)):
 		depth = random.randint(1,200)
 		est = random.randint(50,150) #no less than 50
 		rand_int = random.randint(1,5000)
-		feat = random.randint(1,20) #raise this up between sqrt(n_feat) n_feat/10
+		feat = random.randint(1,150) #raise this up between sqrt(n_feat) n_feat/10
 		#try out a new classifier
 		pipeline = Pipeline([
 			#('rte', RandomTreesEmbedding(n_estimators=est,max_depth=depth,random_state=rand_int)),
@@ -93,6 +93,7 @@ for i in range(len(combine)):
 		models.append(pipeline)
 
 	ensemble_cv.add(models)
+	ensemble.add([LogisticRegression()])
 	ensemble.add(models)
 
 	# Attach the final meta estimator
@@ -117,7 +118,3 @@ t.add_row(['Dataset', 'Ensemble Components', 'Meta Classifier', 'Accuracy Score'
 for k in range(0, len(combine)):
 	t.add_row([k, output[k]["Ensemble_Elements"], output[k]["Meta_Classifier"], output[k]["Accuracy_Score"], output[k]["Accuracy_Score_CV"], output[k]["Runtime"]])
 print(t.draw())
-
-
-
-

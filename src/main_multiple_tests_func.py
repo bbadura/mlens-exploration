@@ -30,6 +30,42 @@ from mlens.ensemble import SuperLearner
 # Output
 from texttable import Texttable
 
+def add_ensemble_same(name, element):
+	# Establish and reset variables
+	acc_score_cv = None
+	acc_score = None
+	time_ = None
+	ensemble_cv = SuperLearner(scorer=accuracy_score, random_state=seed)
+	ensemble = SuperLearner(scorer=accuracy_score, random_state=seed)
+	models = []
+	for j in range(0,30):
+		#try out a new classifier
+		pipeline1 = Pipeline([
+			(name, element)
+		])
+		models.append(pipeline1)
+
+	ensemble_cv.add(models)
+	ensemble.add(models)
+
+	# Attach the final meta estimator
+	ensemble_cv.add_meta(SVC())
+	ensemble.add_meta(SVC())
+
+	ensemble_cv.fit(X_train[i][:1600], Y_train[i][:1600])
+	preds_cv = ensemble_cv.predict(X_test[i][:1600])
+	acc_score_cv = accuracy_score(preds_cv, Y_test[i][:1600])
+
+	start = time.time()
+	ensemble.fit(X_train[i], Y_train[i])
+	preds = ensemble.predict(X_test[i])
+	acc_score = accuracy_score(preds, Y_test[i])
+	end = time.time()
+	time_ = end - start
+
+	return {"Ensemble_Elements": name, "Meta_Classifier": "SVC", "Accuracy_Score_CV": acc_score_cv, "Accuracy_Score": acc_score, "Runtime": time_}
+
+
 #read in data and parse
 files = [['obtrain.csv','obtest.csv']]
 train_df = []
@@ -69,55 +105,13 @@ print("------Feature Selection Complete------")
 
 output = {}
 
-for i in range(len(combine)):
-	# Establish and reset variables
-	acc_score_cv = None
-	acc_score = None
-	time_ = None
-
-	print("------Ensemble Fitting------")
-	# Try another iteration of the ensemble
-	ensemble_cv = SuperLearner(scorer=accuracy_score, random_state=seed)
-	ensemble = SuperLearner(scorer=accuracy_score, random_state=seed)
-	models = []
-	for j in range(0,9):
-		depth = random.randint(1,200)
-		est = random.randint(50,150) #no less than 50
-		rand_int = random.randint(1,5000)
-		feat = random.randint(1,20) #raise this up between sqrt(n_feat) n_feat/10
-		#try out a new classifier
-		pipeline = Pipeline([
-			#('rte', RandomTreesEmbedding(n_estimators=est,max_depth=depth,random_state=rand_int)),
-			('rfc', RandomForestClassifier(n_estimators=est,max_features=feat,max_depth=depth,random_state=rand_int)),
-		])
-		models.append(pipeline)
-
-	ensemble_cv.add(models)
-	ensemble.add(models)
-
-	# Attach the final meta estimator
-	ensemble_cv.add_meta(SVC())
-	ensemble.add_meta(SVC())
-
-	ensemble_cv.fit(X_train[i][:1600], Y_train[i][:1600])
-	preds_cv = ensemble_cv.predict(X_test[i][:1600])
-	acc_score_cv = accuracy_score(preds_cv, Y_test[i][:1600])
-
-	start = time.time()
-	ensemble.fit(X_train[i], Y_train[i])
-	preds = ensemble.predict(X_test[i])
-	acc_score = accuracy_score(preds, Y_test[i])
-	end = time.time()
-	time_ = end - start
-
-	output[i] = {"Ensemble_Elements": "RFC", "Meta_Classifier": "SVC", "Accuracy_Score_CV": acc_score_cv, "Accuracy_Score": acc_score, "Runtime": time_}
+output['rfc'] = add_ensemble_same('rfc', RandomForestClassifier(n_estimators=random.randint(50,150),max_features=random.randint(1,20),max_depth=random.randint(1,200),random_state=random.randint(1,5000)))
+output['lr'] = add_ensemble_same('lr', LogisticRegression(random_state=random.randint(1,5000)))
+output['etc'] = add_ensemble_same('etc', ExtraTreeClassifier(max_features=random.randint(1,20),max_depth=random.randint(1,200),random_state=random.randint(1,5000)))
+output['svc'] = add_ensemble_same('svc', SVC(random_state=random.randint(1,5000), degree=random.randint(1,5000)))
 
 t = Texttable()
 t.add_row(['Dataset', 'Ensemble Components', 'Meta Classifier', 'Accuracy Score', 'Accuracy Score (cross-val)', 'Runtime'])
-for k in range(0, len(combine)):
-	t.add_row([k, output[k]["Ensemble_Elements"], output[k]["Meta_Classifier"], output[k]["Accuracy_Score"], output[k]["Accuracy_Score_CV"], output[k]["Runtime"]])
+for key, value in output.iteritems():
+	t.add_row([key, output[key]["Ensemble_Elements"], output[key]["Meta_Classifier"], output[key]["Accuracy_Score"], output[key]["Accuracy_Score_CV"], output[key]["Runtime"]])
 print(t.draw())
-
-
-
-
