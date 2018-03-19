@@ -108,7 +108,9 @@ output = {}
 output['rfc'] = add_ensemble_same('rfc', RandomForestClassifier(n_estimators=random.randint(50,150),max_features=random.randint(1,20),max_depth=random.randint(1,200),random_state=random.randint(1,5000)))
 output['lr'] = add_ensemble_same('lr', LogisticRegression(random_state=random.randint(1,5000)))
 output['etc'] = add_ensemble_same('etc', ExtraTreeClassifier(max_features=random.randint(1,20),max_depth=random.randint(1,200),random_state=random.randint(1,5000)))
-output['svc'] = add_ensemble_same('svc', SVC(random_state=random.randint(1,5000), degree=random.randint(1,5000)))
+output['svc'] = add_ensemble_same('svc', SVC(random_state=random.randint(1,5000),degree=random.randint(1,5000)))
+output['knc'] = add_ensemble_same('knc', KNeighborsClassifier(n_neighbors=random.randint(1,20),leaf_size=random.randint(10,100)))
+output['dtc'] = add_ensemble_same('dtc', DecisionTreeClassifier(max_depth=random.randint(1,200),max_features=random.randint(1,20),random_state=random.randint(1,5000)))
 
 t = Texttable()
 t.add_row(['Dataset', 'Ensemble Components', 'Meta Classifier', 'Accuracy Score', 'Accuracy Score (cross-val)', 'Runtime'])
