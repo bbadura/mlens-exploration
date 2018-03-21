@@ -287,7 +287,7 @@ def ensemble_saved():
 # Set up progress bar
 
 #read in data and parse
-files = [['data/obtrain.csv','data/obtest.csv']]
+files = [['obtrain.csv','obtest.csv']]
 train_df = []
 test_df = []
 combine = []
@@ -331,7 +331,8 @@ output['svc'] = add_ensemble_same('svc', SVC(random_state=random.randint(1,5000)
 output['knc'] = add_ensemble_same('knc', KNeighborsClassifier(n_neighbors=random.randint(1,20),leaf_size=random.randint(10,100)), 'svc', SVC(), False)
 output['dtc'] = add_ensemble_same('dtc', DecisionTreeClassifier(max_depth=random.randint(1,200),max_features=random.randint(1,20),random_state=random.randint(1,5000)), 'svc', SVC(), False)
 #output['rp1'] = add_ensemble_random('rp1', 'svc', SVC(), False)
-output['combo'] = ensemble_collection([['rfc', RandomForestClassifier(n_estimators=random.randint(50,150),max_features=random.randint(1,20),max_depth=random.randint(1,200),random_state=random.randint(1,5000))],
+output['combo'] = ensemble_collection(
+		[['rfc', RandomForestClassifier(n_estimators=random.randint(50,150),max_features=random.randint(1,20),max_depth=random.randint(1,200),random_state=random.randint(1,5000))],
 		['lr', LogisticRegression(random_state=random.randint(1,5000))],
 		['knc', KNeighborsClassifier(n_neighbors=random.randint(1,20),leaf_size=random.randint(10,100))],
 		['dtc', DecisionTreeClassifier(max_depth=random.randint(1,200),max_features=random.randint(1,20),random_state=random.randint(1,5000))]],
