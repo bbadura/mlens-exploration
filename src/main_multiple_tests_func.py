@@ -247,7 +247,7 @@ def ensemble_collection(elements, meta_name, meta, cross_val):
 				listToSave.append([ensemble, acc_score])
 		listToSave.sort(key=itemgetter(1))
 
-		return {"Ensemble_Elements": elements, "Meta_Classifier": meta_name, "Accuracy_Score_CV": "N/A", "Accuracy_Score": acc_score, "Runtime": time_}
+		return {"Ensemble_Elements": [elements[0][0],elements[1][0],elements[2][0]], "Meta_Classifier": meta_name, "Accuracy_Score_CV": "N/A", "Accuracy_Score": acc_score, "Runtime": time_}
 
 
 # Method to run old ensembles that performed well
