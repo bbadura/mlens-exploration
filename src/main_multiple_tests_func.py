@@ -191,58 +191,32 @@ def ensemble_saved():
 	acc_score_cv = None
 	acc_score = None
 	time_ = None
+
+	#open from previous library... which is currently too large
 	for m in listToSave:
 		if (cross_val == True):
-			ensemble_cv.add(models)
-			ensemble.add(models)
 
-			# Attach the final meta estimator
-			ensemble_cv.add_meta(meta)
-			ensemble.add_meta(meta)
-
-			ensemble_cv.fit(X_train[i][:1600], Y_train[i][:1600])
-			preds_cv = ensemble_cv.predict(X_test[i][:1600])
+			m.fit(X_train[i][:1600], Y_train[i][:1600])
+			preds_cv = m.predict(X_test[i][:1600])
 			acc_score_cv = accuracy_score(preds_cv, Y_test[i][:1600])
 
 			start = time.time()
-			ensemble.fit(X_train[i], Y_train[i])
-			preds = ensemble.predict(X_test[i])
+			m.fit(X_train[i], Y_train[i])
+			preds = m.predict(X_test[i])
 			acc_score = accuracy_score(preds, Y_test[i])
 			end = time.time()
 			time_ = end - start
-			if(acc_score > 0.83):
-				if (len(listToSave) == 5):
-					for x in listToSave:
-						if x[1] < acc_score:
-							x = [ensemble, acc_score]
-							break;
-				else:
-					listToSave.append([ensemble, acc_score])
-			listToSave.sort(key=itemgetter(1))
 
-			return {"Ensemble_Elements": name, "Meta_Classifier": meta_name, "Accuracy_Score_CV": acc_score_cv, "Accuracy_Score": acc_score, "Runtime": time_}
+			return {"Ensemble_Elements": name, "Meta_Classifier": "svc", "Accuracy_Score_CV": acc_score_cv, "Accuracy_Score": acc_score, "Runtime": time_}
 		else:
-			ensemble.add(models)
-			# Attach the final meta estimator
-			ensemble.add_meta(meta)
-
 			start = time.time()
-			ensemble.fit(X_train[i], Y_train[i])
-			preds = ensemble.predict(X_test[i])
+			m.fit(X_train[i], Y_train[i])
+			preds = m.predict(X_test[i])
 			acc_score = accuracy_score(preds, Y_test[i])
 			end = time.time()
 			time_ = end - start
-			if(acc_score > 0.83):
-				if (len(listToSave) == 5):
-					for x in listToSave:
-						if x[1] < acc_score:
-							x = [ensemble, acc_score]
-							break;
-				else:
-					listToSave.append([ensemble, acc_score])
-			listToSave.sort(key=itemgetter(1))
 
-			return {"Ensemble_Elements": name, "Meta_Classifier": meta_name, "Accuracy_Score_CV": "N/A", "Accuracy_Score": acc_score, "Runtime": time_}
+			return {"Ensemble_Elements": name, "Meta_Classifier": "svc", "Accuracy_Score_CV": "N/A", "Accuracy_Score": acc_score, "Runtime": time_}
 
 
 # Set up progress bar
@@ -310,6 +284,6 @@ if (file_output != None):
 	sys.stdout = orig_stdout
 	f.close()
 
-print("Savings {} high performing models into library (acc_score > 85%)".format(len(listToSave)))
+"""print("Savings {} high performing models into library (acc_score > 85%)".format(len(listToSave)))
 with open('library.pkl', 'wb') as f:
-	pickle.dump(listToSave, f)
+	pickle.dump(listToSave, f)"""
