@@ -2,7 +2,7 @@ HOST=127.0.0.1
 TEST_PATH=./
 
 local:
-	python src/main_multiple_tests_func.py
+	python src/ensemble_single.py
 
 test:
 	docker build -t myproj .
