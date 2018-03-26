@@ -111,7 +111,7 @@ def add_ensemble_same(name, element, meta_name, meta, cross_val, X_train, Y_trai
 
 		return {"Ensemble_Elements": name, "Meta_Classifier": meta_name, "Accuracy_Score_CV": "N/A", "Accuracy_Score": acc_score, "Runtime": time_}
 
-
+# Adds an ensemble comprised of random projections
 def add_ensemble_random(name, meta_name, meta, cross_val, X_train, Y_train, X_test, Y_test):
 	# Establish and reset variables
 	acc_score_cv = None
@@ -180,7 +180,7 @@ def add_ensemble_random(name, meta_name, meta, cross_val, X_train, Y_train, X_te
 
 		return {"Ensemble_Elements": name, "Meta_Classifier": meta_name, "Accuracy_Score_CV": "N/A", "Accuracy_Score": acc_score, "Runtime": time_}
 
-# Method to run a collection of models of different types
+# Adds an ensemble composed of a collection of models of different types
 def ensemble_collection(elements, meta_name, meta, cross_val, X_train, Y_train, X_test, Y_test):
 	# Establish and reset variables
 	acc_score_cv = None
@@ -250,7 +250,7 @@ def ensemble_collection(elements, meta_name, meta, cross_val, X_train, Y_train, 
 		return {"Ensemble_Elements": [elements[0][0],elements[1][0],elements[2][0]], "Meta_Classifier": meta_name, "Accuracy_Score_CV": "N/A", "Accuracy_Score": acc_score, "Runtime": time_}
 
 
-# Method to run old ensembles that performed well
+# Adds old ensembles that performed well on previous datasets
 def ensemble_saved():
 	# Establish and reset variables
 	acc_score_cv = None
@@ -283,9 +283,10 @@ def ensemble_saved():
 
 			return {"Ensemble_Elements": name, "Meta_Classifier": "svc", "Accuracy_Score_CV": "N/A", "Accuracy_Score": acc_score, "Runtime": time_}
 
+# Runs the program... add test datasets to this portion
 def main():
 	#read in data and parse
-	files = ['data/obtrain.csv','data/obtest.csv']
+	files = ['obtrain.csv','obtest.csv']
 	train_df = pd.read_csv(files[0], header=None)
 	test_df = pd.read_csv(files[1], header=None)
 	combine = [train_df, test_df]
@@ -301,23 +302,22 @@ def main():
 	X_test = test_df.drop(559, axis=1)
 	Y_test = test_df[559]
 
-	#feature selection
-	"""selector = SelectKBest(f_classif, k=20)
-	for i in range(len(combine)):
-		X_train[i] = selector.fit_transform(X_train[i], Y_train[i])
-		X_test[i] = X_test[i][selector.get_support(indices=True)]"""
+	#feature selection (currently only works on datasets that do not have named index fields)
+	selector = SelectKBest(f_classif, k=20)
+	X_train = selector.fit_transform(X_train, Y_train)
+	X_test = X_test[selector.get_support(indices=True)]
 
 	#print("------Feature Selection Complete------")
 
 	output = {} 
 
 	# output['rfc'] = add_ensemble_same('rfc', RandomForestClassifier(n_estimators=random.randint(50,150),max_features=random.randint(1,20),max_depth=random.randint(1,200),random_state=random.randint(1,5000)), 'svc', SVC(), False, X_train, Y_train, X_test, Y_test)
-	# output['lr'] = add_ensemble_same('lr', LogisticRegression(random_state=random.randint(1,5000)), 'svc', SVC(), False, X_train, Y_train, X_test, Y_test)
-	# output['etc'] = add_ensemble_same('etc', ExtraTreeClassifier(max_features=random.randint(1,20),max_depth=random.randint(1,200),random_state=random.randint(1,5000)), 'svc', SVC(), False, X_train, Y_train, X_test, Y_test)
-	# output['svc'] = add_ensemble_same('svc', SVC(random_state=random.randint(1,5000),degree=random.randint(1,5000)), 'svc', SVC(), False, X_train, Y_train, X_test, Y_test)
-	# output['knc'] = add_ensemble_same('knc', KNeighborsClassifier(n_neighbors=random.randint(1,20),leaf_size=random.randint(10,100)), 'svc', SVC(), False, X_train, Y_train, X_test, Y_test)
-	# output['dtc'] = add_ensemble_same('dtc', DecisionTreeClassifier(max_depth=random.randint(1,200),max_features=random.randint(1,20),random_state=random.randint(1,5000)), 'svc', SVC(), False, X_train, Y_train, X_test, Y_test)
-	output['rp1'] = add_ensemble_random('rp1', 'svc', SVC(), False, X_train, Y_train, X_test, Y_test)
+	output['lr'] = add_ensemble_same('lr', LogisticRegression(random_state=random.randint(1,5000)), 'svc', SVC(), False, X_train, Y_train, X_test, Y_test)
+	output['etc'] = add_ensemble_same('etc', ExtraTreeClassifier(max_features=random.randint(1,20),max_depth=random.randint(1,200),random_state=random.randint(1,5000)), 'svc', SVC(), False, X_train, Y_train, X_test, Y_test)
+	output['svc'] = add_ensemble_same('svc', SVC(random_state=random.randint(1,5000),degree=random.randint(1,5000)), 'svc', SVC(), False, X_train, Y_train, X_test, Y_test)
+	output['knc'] = add_ensemble_same('knc', KNeighborsClassifier(n_neighbors=random.randint(1,20),leaf_size=random.randint(10,100)), 'svc', SVC(), False, X_train, Y_train, X_test, Y_test)
+	output['dtc'] = add_ensemble_same('dtc', DecisionTreeClassifier(max_depth=random.randint(1,200),max_features=random.randint(1,20),random_state=random.randint(1,5000)), 'svc', SVC(), False, X_train, Y_train, X_test, Y_test)
+	# output['rp1'] = add_ensemble_random('rp1', 'svc', SVC(), False, X_train, Y_train, X_test, Y_test)
 	output['combo'] = ensemble_collection(
 			[['rfc', RandomForestClassifier(n_estimators=random.randint(50,150),max_features=random.randint(1,20),max_depth=random.randint(1,200),random_state=random.randint(1,5000))],
 			['lr', LogisticRegression(random_state=random.randint(1,5000))],
