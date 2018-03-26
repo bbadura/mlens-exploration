@@ -309,8 +309,9 @@ def main():
 
 	#print("------Feature Selection Complete------")
 
-	output = {} 
+	output = {}
 
+	# Function calls to create and test ensembles
 	# output['rfc'] = add_ensemble_same('rfc', RandomForestClassifier(n_estimators=random.randint(50,150),max_features=random.randint(1,20),max_depth=random.randint(1,200),random_state=random.randint(1,5000)), 'svc', SVC(), False, X_train, Y_train, X_test, Y_test)
 	output['lr'] = add_ensemble_same('lr', LogisticRegression(random_state=random.randint(1,5000)), 'svc', SVC(), False, X_train, Y_train, X_test, Y_test)
 	output['etc'] = add_ensemble_same('etc', ExtraTreeClassifier(max_features=random.randint(1,20),max_depth=random.randint(1,200),random_state=random.randint(1,5000)), 'svc', SVC(), False, X_train, Y_train, X_test, Y_test)
