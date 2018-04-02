@@ -37,10 +37,6 @@ from mlens.ensemble import SequentialEnsemble
 # Output
 from texttable import Texttable
 
-# Multiprocessing
-from ipyparallel import Client
-from ipyparallel.joblib import IPythonParallelBackend
-
 seed = 9880
 
 #Adds an ensemble composed of the same elements with different (randomized) parameters
