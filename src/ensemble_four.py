@@ -170,7 +170,7 @@ def main():
 
 	output = {}
 
-	c = Client(profile='myprofile')
+	c = Client()
 	print(c.ids)
 	bview = c.load_balanced_view()
 
