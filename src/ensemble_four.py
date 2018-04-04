@@ -39,6 +39,12 @@ from mlens.ensemble import SequentialEnsemble
 # Output
 from texttable import Texttable
 
+# Parallelization
+from sklearn.externals.joblib import Parallel, parallel_backend, register_parallel_backend
+
+from ipyparallel import Client
+from ipyparallel.joblib import IPythonParallelBackend
+
 seed = 9880
 
 #Adds an ensemble composed of the same elements with different (randomized) parameters
@@ -164,43 +170,51 @@ def main():
 
 	output = {}
 
-	# Function calls to create and test ensembles
-	output['super_rfc'] = add_superlearner('super_rfc', models, X_train, Y_train, X_test, Y_test)
-	print("---------------  10%  ---------------")
-	output['sub_rfc'] = add_subsemble('sub_rfc', models, X_train, Y_train, X_test, Y_test)
-	print("---------------  20%  ---------------")
-	output['blend_rfc'] = add_blend('blend_rfc', models, X_train, Y_train, X_test, Y_test)
-	print("---------------  30%  ---------------")
+	c = Client(profile='myprofile')
+	print(c.ids)
+	bview = c.load_balanced_view()
 
-	models = []
-	for j in range(0,30):
-		#try out a new classifier
-		pipeline1 = Pipeline([
-			('xgb', GradientBoostingClassifier(n_estimators=random.randint(50,150),max_features=random.randint(1,20),max_depth=random.randint(1,200),random_state=random.randint(1,5000)))
-		])
-		models.append(pipeline1)
+	# this is taken from the ipyparallel source code
+	register_parallel_backend('ipyparallel', lambda : IPythonParallelBackend(view=bview))
 
-	output['super_xgb'] = add_superlearner('super_xgb', models, X_train, Y_train, X_test, Y_test)
-	print("---------------  40%  ---------------")
-	output['sub_xgb'] = add_subsemble('sub_xgb', models, X_train, Y_train, X_test, Y_test)
-	print("---------------  50%  ---------------")
-	output['blend_xgb'] = add_blend('blend_xgb', models, X_train, Y_train, X_test, Y_test)
-	print("---------------  60%  ---------------")
+	with parallel_backend('ipyparallel'):
+		# Function calls to create and test ensembles
+		output['super_rfc'] = add_superlearner('super_rfc', models, X_train, Y_train, X_test, Y_test)
+		print("---------------  10%  ---------------")
+		output['sub_rfc'] = add_subsemble('sub_rfc', models, X_train, Y_train, X_test, Y_test)
+		print("---------------  20%  ---------------")
+		output['blend_rfc'] = add_blend('blend_rfc', models, X_train, Y_train, X_test, Y_test)
+		print("---------------  30%  ---------------")
 
-	models = []
-	for j in range(0,30):
-		#try out a new classifier
-		pipeline1 = Pipeline([
-			('ada', AdaBoostClassifier(n_estimators=random.randint(50,150),random_state=random.randint(1,5000)))
-		])
-		models.append(pipeline1)
+		models = []
+		for j in range(0,30):
+			#try out a new classifier
+			pipeline1 = Pipeline([
+				('xgb', GradientBoostingClassifier(n_estimators=random.randint(50,150),max_features=random.randint(1,20),max_depth=random.randint(1,200),random_state=random.randint(1,5000)))
+			])
+			models.append(pipeline1)
 
-	output['super_ada'] = add_superlearner('super_ada', models, X_train, Y_train, X_test, Y_test)
-	print("---------------  70%  ---------------")
-	output['sub_ada'] = add_subsemble('sub_ada', models, X_train, Y_train, X_test, Y_test)
-	print("---------------  80%  ---------------")
-	output['blend_ada'] = add_blend('blend_ada', models, X_train, Y_train, X_test, Y_test)
-	print("---------------  90%  ---------------")
+		output['super_xgb'] = add_superlearner('super_xgb', models, X_train, Y_train, X_test, Y_test)
+		print("---------------  40%  ---------------")
+		output['sub_xgb'] = add_subsemble('sub_xgb', models, X_train, Y_train, X_test, Y_test)
+		print("---------------  50%  ---------------")
+		output['blend_xgb'] = add_blend('blend_xgb', models, X_train, Y_train, X_test, Y_test)
+		print("---------------  60%  ---------------")
+
+		models = []
+		for j in range(0,30):
+			#try out a new classifier
+			pipeline1 = Pipeline([
+				('ada', AdaBoostClassifier(n_estimators=random.randint(50,150),random_state=random.randint(1,5000)))
+			])
+			models.append(pipeline1)
+
+		output['super_ada'] = add_superlearner('super_ada', models, X_train, Y_train, X_test, Y_test)
+		print("---------------  70%  ---------------")
+		output['sub_ada'] = add_subsemble('sub_ada', models, X_train, Y_train, X_test, Y_test)
+		print("---------------  80%  ---------------")
+		output['blend_ada'] = add_blend('blend_ada', models, X_train, Y_train, X_test, Y_test)
+		print("---------------  90%  ---------------")
 
 	t = Texttable()
 	t.add_row(['Dataset', 'Ensemble', 'Meta Classifier', 'Accuracy Score', 'Runtime'])
