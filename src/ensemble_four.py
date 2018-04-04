@@ -166,8 +166,11 @@ def main():
 
 	# Function calls to create and test ensembles
 	output['super_rfc'] = add_superlearner('super_rfc', models, X_train, Y_train, X_test, Y_test)
+	print("---------------  10%  ---------------")
 	output['sub_rfc'] = add_subsemble('sub_rfc', models, X_train, Y_train, X_test, Y_test)
+	print("---------------  20%  ---------------")
 	output['blend_rfc'] = add_blend('blend_rfc', models, X_train, Y_train, X_test, Y_test)
+	print("---------------  30%  ---------------")
 
 	models = []
 	for j in range(0,30):
@@ -178,8 +181,11 @@ def main():
 		models.append(pipeline1)
 
 	output['super_xgb'] = add_superlearner('super_xgb', models, X_train, Y_train, X_test, Y_test)
+	print("---------------  40%  ---------------")
 	output['sub_xgb'] = add_subsemble('sub_xgb', models, X_train, Y_train, X_test, Y_test)
+	print("---------------  50%  ---------------")
 	output['blend_xgb'] = add_blend('blend_xgb', models, X_train, Y_train, X_test, Y_test)
+	print("---------------  60%  ---------------")
 
 	models = []
 	for j in range(0,30):
@@ -190,8 +196,11 @@ def main():
 		models.append(pipeline1)
 
 	output['super_ada'] = add_superlearner('super_ada', models, X_train, Y_train, X_test, Y_test)
+	print("---------------  70%  ---------------")
 	output['sub_ada'] = add_subsemble('sub_ada', models, X_train, Y_train, X_test, Y_test)
+	print("---------------  80%  ---------------")
 	output['blend_ada'] = add_blend('blend_ada', models, X_train, Y_train, X_test, Y_test)
+	print("---------------  90%  ---------------")
 
 	t = Texttable()
 	t.add_row(['Dataset', 'Ensemble', 'Meta Classifier', 'Accuracy Score', 'Runtime'])
