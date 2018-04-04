@@ -23,6 +23,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomTreesEmbedding
+from sklearn.ensemble import GradientBoostingClassifier
 
 # Model evaluation
 from mlens.metrics import make_scorer
@@ -166,6 +167,18 @@ def main():
 	output['super_rfc'] = add_superlearner('super_rfc', models, X_train, Y_train, X_test, Y_test)
 	output['sub_rfc'] = add_subsemble('sub_rfc', models, X_train, Y_train, X_test, Y_test)
 	output['blend_rfc'] = add_blend('blend_rfc', models, X_train, Y_train, X_test, Y_test)
+
+	models = []
+	for j in range(0,30):
+		#try out a new classifier
+		pipeline1 = Pipeline([
+			('xgb', GradientBoostingClassifier(n_estimators=random.randint(50,150),max_features=random.randint(1,20),max_depth=random.randint(1,200),random_state=random.randint(1,5000)))
+		])
+		models.append(pipeline1)
+
+	output['super_xgb'] = add_superlearner('super_xgb', models, X_train, Y_train, X_test, Y_test)
+	output['sub_xgb'] = add_subsemble('sub_xgb', models, X_train, Y_train, X_test, Y_test)
+	output['blend_xgb'] = add_blend('blend_xgb', models, X_train, Y_train, X_test, Y_test)
 
 	t = Texttable()
 	t.add_row(['Dataset', 'Ensemble', 'Meta Classifier', 'Accuracy Score', 'Runtime'])
