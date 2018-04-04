@@ -24,6 +24,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomTreesEmbedding
 from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.ensemble import AdaBoostClassifier
 
 # Model evaluation
 from mlens.metrics import make_scorer
@@ -179,6 +180,18 @@ def main():
 	output['super_xgb'] = add_superlearner('super_xgb', models, X_train, Y_train, X_test, Y_test)
 	output['sub_xgb'] = add_subsemble('sub_xgb', models, X_train, Y_train, X_test, Y_test)
 	output['blend_xgb'] = add_blend('blend_xgb', models, X_train, Y_train, X_test, Y_test)
+
+	models = []
+	for j in range(0,30):
+		#try out a new classifier
+		pipeline1 = Pipeline([
+			('ada', AdaBoostClassifier(n_estimators=random.randint(50,150),random_state=random.randint(1,5000)))
+		])
+		models.append(pipeline1)
+
+	output['super_ada'] = add_superlearner('super_ada', models, X_train, Y_train, X_test, Y_test)
+	output['sub_ada'] = add_subsemble('sub_ada', models, X_train, Y_train, X_test, Y_test)
+	output['blend_ada'] = add_blend('blend_ada', models, X_train, Y_train, X_test, Y_test)
 
 	t = Texttable()
 	t.add_row(['Dataset', 'Ensemble', 'Meta Classifier', 'Accuracy Score', 'Runtime'])
