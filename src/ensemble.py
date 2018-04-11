@@ -150,6 +150,7 @@ def main():
 	X_train = selector.fit_transform(X_train, Y_train)
 	X_test = X_test[selector.get_support(indices=True)]
 
+	output = []
 	#print("------Feature Selection Complete------")
 	for i in range(5):
 		models = []
@@ -160,53 +161,58 @@ def main():
 			])
 			models.append(pipeline1)
 
-		output = {}
+		output[i] = {}
 
 		# Function calls to create and test ensembles
-		output['super_rfc'] = add_superlearner('super_rfc', models, X_train, Y_train, X_test, Y_test)
+		output[i]['super_rfc'] = add_superlearner('super_rfc', models, X_train, Y_train, X_test, Y_test)
 		print("---------------  10%  ---------------")
-		output['sub_rfc'] = add_subsemble('sub_rfc', models, X_train, Y_train, X_test, Y_test)
+		output[i]['sub_rfc'] = add_subsemble('sub_rfc', models, X_train, Y_train, X_test, Y_test)
 		print("---------------  20%  ---------------")
-		output['blend_rfc'] = add_blend('blend_rfc', models, X_train, Y_train, X_test, Y_test)
+		output[i]['blend_rfc'] = add_blend('blend_rfc', models, X_train, Y_train, X_test, Y_test)
 		print("---------------  30%  ---------------")
 
-		models = []
-		for j in range(0,30):
-			#try out a new classifier
-			pipeline1 = Pipeline([
-				('xgb', GradientBoostingClassifier(n_estimators=random.randint(50,150),max_features=random.randint(1,20),max_depth=random.randint(1,200),random_state=random.randint(1,5000)))
-			])
-			models.append(pipeline1)
+		# models = []
+		# for j in range(0,30):
+		# 	#try out a new classifier
+		# 	pipeline1 = Pipeline([
+		# 		('xgb', GradientBoostingClassifier(n_estimators=random.randint(50,150),max_features=random.randint(1,20),max_depth=random.randint(1,200),random_state=random.randint(1,5000)))
+		# 	])
+		# 	models.append(pipeline1)
 
-		output['super_xgb'] = add_superlearner('super_xgb', models, X_train, Y_train, X_test, Y_test)
-		print("---------------  40%  ---------------")
-		output['sub_xgb'] = add_subsemble('sub_xgb', models, X_train, Y_train, X_test, Y_test)
-		print("---------------  50%  ---------------")
-		output['blend_xgb'] = add_blend('blend_xgb', models, X_train, Y_train, X_test, Y_test)
-		print("---------------  60%  ---------------")
+		# output[i]['super_xgb'] = add_superlearner('super_xgb', models, X_train, Y_train, X_test, Y_test)
+		# print("---------------  40%  ---------------")
+		# output[i]['sub_xgb'] = add_subsemble('sub_xgb', models, X_train, Y_train, X_test, Y_test)
+		# print("---------------  50%  ---------------")
+		# output[i]['blend_xgb'] = add_blend('blend_xgb', models, X_train, Y_train, X_test, Y_test)
+		# print("---------------  60%  ---------------")
 
-		models = []
-		for j in range(0,30):
-			#try out a new classifier
-			pipeline1 = Pipeline([
-				('ada', AdaBoostClassifier(n_estimators=random.randint(50,150),random_state=random.randint(1,5000)))
-			])
-			models.append(pipeline1)
+		# models = []
+		# for j in range(0,30):
+		# 	#try out a new classifier
+		# 	pipeline1 = Pipeline([
+		# 		('ada', AdaBoostClassifier(n_estimators=random.randint(50,150),random_state=random.randint(1,5000)))
+		# 	])
+		# 	models.append(pipeline1)
 
-		output['super_ada'] = add_superlearner('super_ada', models, X_train, Y_train, X_test, Y_test)
-		print("---------------  70%  ---------------")
-		output['sub_ada'] = add_subsemble('sub_ada', models, X_train, Y_train, X_test, Y_test)
-		print("---------------  80%  ---------------")
-		output['blend_ada'] = add_blend('blend_ada', models, X_train, Y_train, X_test, Y_test)
-		print("---------------  90%  ---------------")
+		# output[i]['super_ada'] = add_superlearner('super_ada', models, X_train, Y_train, X_test, Y_test)
+		# print("---------------  70%  ---------------")
+		# output[i]['sub_ada'] = add_subsemble('sub_ada', models, X_train, Y_train, X_test, Y_test)
+		# print("---------------  80%  ---------------")
+		# output[i]['blend_ada'] = add_blend('blend_ada', models, X_train, Y_train, X_test, Y_test)
+		# print("---------------  90%  ---------------")
 
 	t = Texttable()
+	average_acc = {}
+	average_time = {}
 	t.add_row(['Dataset', 'Ensemble', 'Meta Classifier', 'Accuracy Score', 'Runtime'])
-	for key, value in output.iteritems():
-		t.add_row([key, output[key]["Ensemble"], output[key]["Meta_Classifier"], output[key]["Accuracy_Score"], output[key]["Runtime"]])
-	average_acc = (output[0]["Accuracy_Score"] + output[1]["Accuracy_Score"] + output[2]["Accuracy_Score"] + output[3]["Accuracy_Score"] + output[4]["Accuracy_Score"])/5
-	average_time = (output[0]["Runtime"] + output[1]["Runtime"] + output[2]["Runtime"] + output[3]["Runtime"] + output[4]["Runtime"])/5
-	t.add_row(["Average", "---------", "---------", average_acc, average_time])
+	for i in range(5):
+		for key, value in output[i].iteritems():
+			t.add_row([key, output[i][key]["Ensemble"], output[i][key]["Meta_Classifier"], output[i][key]["Accuracy_Score"], output[i][key]["Runtime"]])
+			average_acc[key] = average_acc[key] + output[i][key]["Accuracy_Score"]
+			average_time[key] = average_time[key] + output[i][key]["Runtime"]
+	for key, value in average_acc.iteritems():
+		t.add_row(["Average", key, "SVC", value/5, average_time[key]/5])
+
 	print(t.draw())
 
 	if (file_output != None):
