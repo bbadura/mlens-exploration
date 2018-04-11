@@ -39,12 +39,6 @@ from mlens.ensemble import SequentialEnsemble
 # Output
 from texttable import Texttable
 
-# Parallelization
-from sklearn.externals.joblib import Parallel, parallel_backend, register_parallel_backend
-
-from ipyparallel import Client
-from ipyparallel.joblib import IPythonParallelBackend
-
 seed = 9880
 
 #Adds an ensemble composed of the same elements with different (randomized) parameters
@@ -157,25 +151,17 @@ def main():
 	X_test = X_test[selector.get_support(indices=True)]
 
 	#print("------Feature Selection Complete------")
+	for i in range(5):
+		models = []
+		for j in range(0,30):
+			#try out a new classifier
+			pipeline1 = Pipeline([
+				('rfc', RandomForestClassifier(n_estimators=random.randint(50,150),max_features=random.randint(1,20),max_depth=random.randint(1,200),random_state=random.randint(1,5000)))
+			])
+			models.append(pipeline1)
 
-	models = []
-	for j in range(0,30):
-		#try out a new classifier
-		pipeline1 = Pipeline([
-			('rfc', RandomForestClassifier(n_estimators=random.randint(50,150),max_features=random.randint(1,20),max_depth=random.randint(1,200),random_state=random.randint(1,5000)))
-		])
-		models.append(pipeline1)
+		output = {}
 
-	output = {}
-
-	c = Client()
-	print(c.ids)
-	bview = c.load_balanced_view()
-
-	# this is taken from the ipyparallel source code
-	register_parallel_backend('ipyparallel', lambda : IPythonParallelBackend(view=bview))
-
-	with parallel_backend('ipyparallel'):
 		# Function calls to create and test ensembles
 		output['super_rfc'] = add_superlearner('super_rfc', models, X_train, Y_train, X_test, Y_test)
 		print("---------------  10%  ---------------")
@@ -218,6 +204,9 @@ def main():
 	t.add_row(['Dataset', 'Ensemble', 'Meta Classifier', 'Accuracy Score', 'Runtime'])
 	for key, value in output.iteritems():
 		t.add_row([key, output[key]["Ensemble"], output[key]["Meta_Classifier"], output[key]["Accuracy_Score"], output[key]["Runtime"]])
+	average_acc = (output[0]["Accuracy_Score"] + output[1]["Accuracy_Score"] + output[2]["Accuracy_Score"] + output[3]["Accuracy_Score"] + output[4]["Accuracy_Score"])/5
+	average_time = (output[0]["Runtime"] + output[1]["Runtime"] + output[2]["Runtime"] + output[3]["Runtime"] + output[4]["Runtime"])/5
+	t.add_row(["Average", "---------", "---------", average_acc, average_time])
 	print(t.draw())
 
 	if (file_output != None):
