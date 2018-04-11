@@ -152,7 +152,7 @@ def main():
 
 	output = []
 	#print("------Feature Selection Complete------")
-	for i in range(5):
+	for i in range(3):
 		models = []
 		for j in range(0,30):
 			#try out a new classifier
@@ -205,7 +205,7 @@ def main():
 	average_acc = {}
 	average_time = {}
 	t.add_row(['Dataset', 'Ensemble', 'Meta Classifier', 'Accuracy Score', 'Runtime'])
-	for i in range(5):
+	for i in range(3):
 		for key, value in output[i].iteritems():
 			t.add_row([key, output[i][key]["Ensemble"], output[i][key]["Meta_Classifier"], output[i][key]["Accuracy_Score"], output[i][key]["Runtime"]])
 			average_acc[key] = average_acc[key] + output[i][key]["Accuracy_Score"]
