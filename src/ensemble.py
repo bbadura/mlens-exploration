@@ -150,7 +150,7 @@ def main():
 	X_train = selector.fit_transform(X_train, Y_train)
 	X_test = X_test[selector.get_support(indices=True)]
 
-	output = []
+	output = [0] * 3
 	#print("------Feature Selection Complete------")
 	for i in range(3):
 		models = []
