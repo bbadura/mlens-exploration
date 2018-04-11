@@ -208,10 +208,14 @@ def main():
 	for i in range(3):
 		for key, value in output[i].iteritems():
 			t.add_row([key, output[i][key]["Ensemble"], output[i][key]["Meta_Classifier"], output[i][key]["Accuracy_Score"], output[i][key]["Runtime"]])
-			average_acc[key] = average_acc[key] + output[i][key]["Accuracy_Score"]
-			average_time[key] = average_time[key] + output[i][key]["Runtime"]
+			if (i == 0):
+				average_acc[key] = output[i][key]["Accuracy_Score"]
+				average_time[key] = output[i][key]["Runtime"]
+			else:
+				average_acc[key] = average_acc[key] + output[i][key]["Accuracy_Score"]
+				average_time[key] = average_time[key] + output[i][key]["Runtime"]
 	for key, value in average_acc.iteritems():
-		t.add_row(["Average", key, "SVC", value/5, average_time[key]/5])
+		t.add_row(["Average", key, "SVC", value/3, average_time[key]/3])
 
 	print(t.draw())
 
