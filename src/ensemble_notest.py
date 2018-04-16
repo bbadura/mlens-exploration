@@ -131,16 +131,16 @@ def add_sequential(name, models, X_train, Y_train, X_test, Y_test):
 # Runs the program... add test datasets to this portion
 def main():
 	#read in data and parse
-	files = ['data/ionosphere.csv']
+	files = ['data/iris.csv']
 	train_df = pd.read_csv(files[0], header=None)
-	file_output = "output/output_ionosphere.txt"
+	file_output = "output/output_iris.txt"
 
 	#map classifier as binary
-	train_df[34] = train_df[34].map({'b': 0, 'g': 1}).astype(int)
+	train_df[4] = train_df[4].map({'Iris-setosa': 0, 'Iris-versicolor': 1, 'Iris-virginica': 2}).astype(int)
 
 	#separate models
-	X_train = train_df.drop(34, axis=1)
-	Y_train = train_df[34]
+	X_train = train_df.drop(4, axis=1)
+	Y_train = train_df[4]
 
 	X_train, X_test, Y_train, Y_test = train_test_split(X_train, Y_train, train_size=0.75, test_size=0.25)
 
