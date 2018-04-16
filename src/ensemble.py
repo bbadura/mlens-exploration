@@ -172,35 +172,35 @@ def main():
 		output[i]['blend_rfc'] = add_blend('blend_rfc', models, X_train, Y_train, X_test, Y_test)
 		print("---------------  30%  ---------------")
 
-		# models = []
-		# for j in range(0,30):
-		# 	#try out a new classifier
-		# 	pipeline1 = Pipeline([
-		# 		('xgb', GradientBoostingClassifier(n_estimators=random.randint(50,150),max_features=random.randint(1,20),max_depth=random.randint(1,200),random_state=random.randint(1,5000)))
-		# 	])
-		# 	models.append(pipeline1)
+		models = []
+		for j in range(0,30):
+			#try out a new classifier
+			pipeline1 = Pipeline([
+				('xgb', GradientBoostingClassifier(n_estimators=random.randint(50,150),max_features=random.randint(1,20),max_depth=random.randint(1,200),random_state=random.randint(1,5000)))
+			])
+			models.append(pipeline1)
 
-		# output[i]['super_xgb'] = add_superlearner('super_xgb', models, X_train, Y_train, X_test, Y_test)
-		# print("---------------  40%  ---------------")
-		# output[i]['sub_xgb'] = add_subsemble('sub_xgb', models, X_train, Y_train, X_test, Y_test)
-		# print("---------------  50%  ---------------")
-		# output[i]['blend_xgb'] = add_blend('blend_xgb', models, X_train, Y_train, X_test, Y_test)
-		# print("---------------  60%  ---------------")
+		output[i]['super_xgb'] = add_superlearner('super_xgb', models, X_train, Y_train, X_test, Y_test)
+		print("---------------  40%  ---------------")
+		output[i]['sub_xgb'] = add_subsemble('sub_xgb', models, X_train, Y_train, X_test, Y_test)
+		print("---------------  50%  ---------------")
+		output[i]['blend_xgb'] = add_blend('blend_xgb', models, X_train, Y_train, X_test, Y_test)
+		print("---------------  60%  ---------------")
 
-		# models = []
-		# for j in range(0,30):
-		# 	#try out a new classifier
-		# 	pipeline1 = Pipeline([
-		# 		('ada', AdaBoostClassifier(n_estimators=random.randint(50,150),random_state=random.randint(1,5000)))
-		# 	])
-		# 	models.append(pipeline1)
+		models = []
+		for j in range(0,30):
+			#try out a new classifier
+			pipeline1 = Pipeline([
+				('ada', AdaBoostClassifier(n_estimators=random.randint(50,150),random_state=random.randint(1,5000)))
+			])
+			models.append(pipeline1)
 
-		# output[i]['super_ada'] = add_superlearner('super_ada', models, X_train, Y_train, X_test, Y_test)
-		# print("---------------  70%  ---------------")
-		# output[i]['sub_ada'] = add_subsemble('sub_ada', models, X_train, Y_train, X_test, Y_test)
-		# print("---------------  80%  ---------------")
-		# output[i]['blend_ada'] = add_blend('blend_ada', models, X_train, Y_train, X_test, Y_test)
-		# print("---------------  90%  ---------------")
+		output[i]['super_ada'] = add_superlearner('super_ada', models, X_train, Y_train, X_test, Y_test)
+		print("---------------  70%  ---------------")
+		output[i]['sub_ada'] = add_subsemble('sub_ada', models, X_train, Y_train, X_test, Y_test)
+		print("---------------  80%  ---------------")
+		output[i]['blend_ada'] = add_blend('blend_ada', models, X_train, Y_train, X_test, Y_test)
+		print("---------------  90%  ---------------")
 
 	t = Texttable()
 	average_acc = {}
