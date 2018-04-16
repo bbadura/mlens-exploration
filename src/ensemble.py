@@ -173,7 +173,7 @@ def main():
 		print("---------------  30%  ---------------")
 
 		models = []
-		for j in range(0,30):
+		for j in range(0,10):
 			#try out a new classifier
 			pipeline1 = Pipeline([
 				('xgb', GradientBoostingClassifier(n_estimators=random.randint(50,150),max_features=random.randint(1,20),max_depth=random.randint(1,200),random_state=random.randint(1,5000)))
@@ -188,7 +188,7 @@ def main():
 		print("---------------  60%  ---------------")
 
 		models = []
-		for j in range(0,30):
+		for j in range(0,10):
 			#try out a new classifier
 			pipeline1 = Pipeline([
 				('ada', AdaBoostClassifier(n_estimators=random.randint(50,150),random_state=random.randint(1,5000)))
