@@ -25,6 +25,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomTreesEmbedding
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.ensemble import AdaBoostClassifier
+from sklearn.model_selection import train_test_split
 
 # Model evaluation
 from mlens.metrics import make_scorer
@@ -135,7 +136,7 @@ def main():
 	file_output = "output/output_ecoli.txt"
 
 	#map classifier as binary
-	train_df['binaryClass'] = dataset['binaryClass'].map({'P': 0, 'N': 1}).astype(int)
+	train_df['binaryClass'] = train_df['binaryClass'].map({'P': 0, 'N': 1}).astype(int)
 
 	#separate models
 	X_train = train_df.drop('binaryClass', axis=1)
