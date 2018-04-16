@@ -156,7 +156,7 @@ def main():
 		for j in range(0,10):
 			#try out a new classifier
 			pipeline1 = Pipeline([
-				('rfc', RandomForestClassifier(n_estimators=random.randint(50,150),max_features=random.randint(1,20),max_depth=random.randint(1,200),random_state=random.randint(1,5000)))
+				('rfc', RandomForestClassifier(n_estimators=random.randint(50,150),max_features=random.randint(1,5),max_depth=random.randint(1,200),random_state=random.randint(1,5000)))
 			])
 			models.append(pipeline1)
 
@@ -174,7 +174,7 @@ def main():
 		for j in range(0,10):
 			#try out a new classifier
 			pipeline1 = Pipeline([
-				('xgb', GradientBoostingClassifier(n_estimators=random.randint(50,150),max_features=random.randint(1,20),max_depth=random.randint(1,200),random_state=random.randint(1,5000)))
+				('xgb', GradientBoostingClassifier(n_estimators=random.randint(50,150),max_features=random.randint(1,5),max_depth=random.randint(1,200),random_state=random.randint(1,5000)))
 			])
 			models.append(pipeline1)
 
