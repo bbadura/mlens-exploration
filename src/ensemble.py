@@ -40,6 +40,7 @@ from mlens.ensemble import SequentialEnsemble
 from texttable import Texttable
 
 seed = 9880
+iters = 5
 
 #Adds an ensemble composed of the same elements with different (randomized) parameters
 def add_superlearner(name, models, X_train, Y_train, X_test, Y_test):
@@ -133,7 +134,7 @@ def main():
 	train_df = pd.read_csv(files[0], header=None)
 	test_df = pd.read_csv(files[1], header=None)
 	combine = [train_df, test_df]
-	file_output = "output.txt"
+	file_output = "output/output_ob.txt"
 
 	#map classifier as binary
 	for dataset in combine:
@@ -150,9 +151,9 @@ def main():
 	X_train = selector.fit_transform(X_train, Y_train)
 	X_test = X_test[selector.get_support(indices=True)]
 
-	output = [0] * 3
+	output = [0] * iters
 	#print("------Feature Selection Complete------")
-	for i in range(3):
+	for i in range(iters):
 		models = []
 		for j in range(0,10):
 			#try out a new classifier
@@ -205,7 +206,7 @@ def main():
 	average_acc = {}
 	average_time = {}
 	t.add_row(['Dataset', 'Ensemble', 'Meta Classifier', 'Accuracy Score', 'Runtime'])
-	for i in range(3):
+	for i in range(iters):
 		for key, value in output[i].iteritems():
 			t.add_row([key, output[i][key]["Ensemble"], output[i][key]["Meta_Classifier"], output[i][key]["Accuracy_Score"], output[i][key]["Runtime"]])
 			if (i == 0):
@@ -215,7 +216,7 @@ def main():
 				average_acc[key] = average_acc[key] + output[i][key]["Accuracy_Score"]
 				average_time[key] = average_time[key] + output[i][key]["Runtime"]
 	for key, value in average_acc.iteritems():
-		t.add_row(["Average", key, "SVC", value/3, average_time[key]/3])
+		t.add_row(["Average", key, "SVC", value/iters, average_time[key]/iters])
 
 	print(t.draw())
 
