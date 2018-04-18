@@ -181,7 +181,7 @@ def main():
 
 		# Function calls to create and test ensembles
 		output[i]['super'] = add_superlearner('super', models, X_train, Y_train, X_test, Y_test)
-		print("---------------  {}%  ---------------").format((100/(3*iters))*(i*iters))
+		print("---------------  {}%  ---------------").format((100/(3*iters))*((i+1)*iters))
 		output[i]['sub'] = add_subsemble('sub', models, X_train, Y_train, X_test, Y_test)
 		print("---------------  66%  ---------------")
 		output[i]['blend'] = add_blend('blend', models, X_train, Y_train, X_test, Y_test)
