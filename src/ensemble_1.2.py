@@ -50,7 +50,7 @@ def add_superlearner(name, models, X_train, Y_train, X_test, Y_test):
 	time_ = None
 	ensemble = SuperLearner(scorer=accuracy_score, random_state=seed)
 
-	ensemble.add(models)
+	ensemble.add(models, propagate_features=range(0,559))
 	# ensemble.add(models, propagate_features=X_train)
 	# Attach the final meta estimator
 	ensemble.add_meta(SVC())
