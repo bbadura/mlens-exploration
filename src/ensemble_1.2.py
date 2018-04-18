@@ -183,9 +183,9 @@ def main():
 		output[i]['super'] = add_superlearner('super', models, X_train, Y_train, X_test, Y_test)
 		print("---------------  {}%  ---------------").format((100/(3*iters))*(i+1))
 		output[i]['sub'] = add_subsemble('sub', models, X_train, Y_train, X_test, Y_test)
-		print("---------------  66%  ---------------")
+		print("---------------  {}%  ---------------").format((100/(3*iters))*(i+2))
 		output[i]['blend'] = add_blend('blend', models, X_train, Y_train, X_test, Y_test)
-		print("---------------  99%  ---------------")
+		print("---------------  {}%  ---------------").format((100/(3*iters))*(i+3))
 
 	t = Texttable()
 	average_acc = {}
