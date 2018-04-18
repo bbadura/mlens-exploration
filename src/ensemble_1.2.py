@@ -148,9 +148,9 @@ def main():
 	Y_test = test_df['target_class']
 
 	#feature selection (currently only works on datasets that do not have named index fields)
-	selector = SelectKBest(f_classif, k=20)
-	X_train = selector.fit_transform(X_train, Y_train)
-	X_test = X_test[selector.get_support(indices=True)]
+	# selector = SelectKBest(f_classif, k=20)
+	# X_train = selector.fit_transform(X_train, Y_train)
+	# X_test = X_test[selector.get_support(indices=True)]
 
 	output = [0] * iters
 	#print("------Feature Selection Complete------")
