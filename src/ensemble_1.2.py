@@ -130,26 +130,26 @@ def add_sequential(name, models, X_train, Y_train, X_test, Y_test):
 # Runs the program... add test datasets to this portion
 def main():
 	#read in data and parse
-	files = ['data/mtrain.csv','data/mtest.csv']
-	train_df = pd.read_csv(files[0])
-	test_df = pd.read_csv(files[1])
+	files = ['data/obtrain.csv','data/obtest.csv']
+	train_df = pd.read_csv(files[0], header=None)
+	test_df = pd.read_csv(files[1], header= None)
 	combine = [train_df, test_df]
-	file_output = "output/output_m.txt"
+	file_output = "output/output_1.2_ob.txt"
 
 	#map classifier as binary
 	for dataset in combine:
-			dataset['target_class'] = dataset['target_class'].map({1.0: 1, -1.0: 0}).astype(int)
+			dataset[559] = dataset[559].map({1.0: 1, -1.0: 0}).astype(int)
 
 	#separate models
-	X_train = train_df.drop('target_class', axis=1)
-	Y_train = train_df['target_class']
-	X_test = test_df.drop('target_class', axis=1)
-	Y_test = test_df['target_class']
+	X_train = train_df.drop(559, axis=1)
+	Y_train = train_df[559]
+	X_test = test_df.drop(559, axis=1)
+	Y_test = test_df[559]
 
 	#feature selection (currently only works on datasets that do not have named index fields)
-	# selector = SelectKBest(f_classif, k=20)
-	# X_train = selector.fit_transform(X_train, Y_train)
-	# X_test = X_test[selector.get_support(indices=True)]
+	selector = SelectKBest(f_classif, k=20)
+	X_train = selector.fit_transform(X_train, Y_train)
+	X_test = X_test[selector.get_support(indices=True)]
 
 	output = [0] * iters
 	#print("------Feature Selection Complete------")
@@ -162,17 +162,6 @@ def main():
 			])
 			models.append(pipeline1)
 
-		output[i] = {}
-
-		# Function calls to create and test ensembles
-		output[i]['super_rfc'] = add_superlearner('super_rfc', models, X_train, Y_train, X_test, Y_test)
-		print("---------------  10%  ---------------")
-		output[i]['sub_rfc'] = add_subsemble('sub_rfc', models, X_train, Y_train, X_test, Y_test)
-		print("---------------  20%  ---------------")
-		output[i]['blend_rfc'] = add_blend('blend_rfc', models, X_train, Y_train, X_test, Y_test)
-		print("---------------  30%  ---------------")
-
-		models = []
 		for j in range(0,10):
 			#try out a new classifier
 			pipeline1 = Pipeline([
@@ -180,14 +169,6 @@ def main():
 			])
 			models.append(pipeline1)
 
-		output[i]['super_xgb'] = add_superlearner('super_xgb', models, X_train, Y_train, X_test, Y_test)
-		print("---------------  40%  ---------------")
-		output[i]['sub_xgb'] = add_subsemble('sub_xgb', models, X_train, Y_train, X_test, Y_test)
-		print("---------------  50%  ---------------")
-		output[i]['blend_xgb'] = add_blend('blend_xgb', models, X_train, Y_train, X_test, Y_test)
-		print("---------------  60%  ---------------")
-
-		models = []
 		for j in range(0,10):
 			#try out a new classifier
 			pipeline1 = Pipeline([
@@ -195,12 +176,15 @@ def main():
 			])
 			models.append(pipeline1)
 
-		output[i]['super_ada'] = add_superlearner('super_ada', models, X_train, Y_train, X_test, Y_test)
-		print("---------------  70%  ---------------")
-		output[i]['sub_ada'] = add_subsemble('sub_ada', models, X_train, Y_train, X_test, Y_test)
-		print("---------------  80%  ---------------")
-		output[i]['blend_ada'] = add_blend('blend_ada', models, X_train, Y_train, X_test, Y_test)
-		print("---------------  90%  ---------------")
+		output[i] = {}
+
+		# Function calls to create and test ensembles
+		output[i]['super'] = add_superlearner('super', models, X_train, Y_train, X_test, Y_test)
+		print("---------------  33%  ---------------")
+		output[i]['sub'] = add_subsemble('sub', models, X_train, Y_train, X_test, Y_test)
+		print("---------------  66%  ---------------")
+		output[i]['blend'] = add_blend('blend', models, X_train, Y_train, X_test, Y_test)
+		print("---------------  99%  ---------------")
 
 	t = Texttable()
 	average_acc = {}
