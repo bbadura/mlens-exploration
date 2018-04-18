@@ -131,26 +131,26 @@ def add_sequential(name, models, X_train, Y_train, X_test, Y_test):
 # Runs the program... add test datasets to this portion
 def main():
 	#read in data and parse
-	files = ['data/mtrain.csv','data/mtest.csv']
-	train_df = pd.read_csv(files[0])
-	test_df = pd.read_csv(files[1])
+	files = ['data/obtrain.csv','data/obtest.csv']
+	train_df = pd.read_csv(files[0], header=None)
+	test_df = pd.read_csv(files[1], header= None)
 	combine = [train_df, test_df]
-	file_output = "output/output_1.2_m.txt"
+	file_output = "output/output_1.2_ob.txt"
 
 	#map classifier as binary
 	for dataset in combine:
-			dataset['target_class'] = dataset['target_class'].map({1.0: 1, -1.0: 0}).astype(int)
+			dataset[559] = dataset[559].map({1.0: 1, -1.0: 0}).astype(int)
 
 	#separate models
-	X_train = train_df.drop('target_class', axis=1)
-	Y_train = train_df['target_class']
-	X_test = test_df.drop('target_class', axis=1)
-	Y_test = test_df['target_class']
+	X_train = train_df.drop(559, axis=1)
+	Y_train = train_df[559]
+	X_test = test_df.drop(559, axis=1)
+	Y_test = test_df[559]
 
 	#feature selection (currently only works on datasets that do not have named index fields)
-	# selector = SelectKBest(f_classif, k=20)
-	# X_train = selector.fit_transform(X_train, Y_train)
-	# X_test = X_test[selector.get_support(indices=True)]
+	selector = SelectKBest(f_classif, k=20)
+	X_train = selector.fit_transform(X_train, Y_train)
+	X_test = X_test[selector.get_support(indices=True)]
 
 	output = [0] * iters
 	#print("------Feature Selection Complete------")
