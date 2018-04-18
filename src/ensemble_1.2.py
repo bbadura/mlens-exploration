@@ -182,11 +182,11 @@ def main():
 
 		# Function calls to create and test ensembles
 		output[i]['super'] = add_superlearner('super', models, X_train, Y_train, X_test, Y_test)
-		print("---------------  {}%  ---------------").format((100/(ntests*iters))*((i+1)+(i*ntests)))
+		print("---------------  {}%  ---------------").format((100/(ntests*iters))*(1+(i*ntests)))
 		output[i]['sub'] = add_subsemble('sub', models, X_train, Y_train, X_test, Y_test)
-		print("---------------  {}%  ---------------").format((100/(ntests*iters))*((i+2)+(i*ntests)))
+		print("---------------  {}%  ---------------").format((100/(ntests*iters))*(2+(i*ntests)))
 		output[i]['blend'] = add_blend('blend', models, X_train, Y_train, X_test, Y_test)
-		print("---------------  {}%  ---------------").format((100/(ntests*iters))*((i+3)+(i*ntests)))
+		print("---------------  {}%  ---------------").format((100/(ntests*iters))*(3+(i*ntests)))
 
 	t = Texttable()
 	average_acc = {}
