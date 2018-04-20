@@ -53,7 +53,7 @@ def add_superlearner(name, models, X_train, Y_train, X_test, Y_test):
 	ensemble.add(models, propagate_features=range(0,20))
 	# ensemble.add(models, propagate_features=X_train)
 	# Attach the final meta estimator
-	ensemble.add_meta(SVC())
+	ensemble.add_meta(LogisticRegression())
 
 	start = time.time()
 	ensemble.fit(X_train, Y_train)
@@ -62,7 +62,7 @@ def add_superlearner(name, models, X_train, Y_train, X_test, Y_test):
 	end = time.time()
 	time_ = end - start
 
-	return {"Ensemble": name, "Meta_Classifier": "SVC", "Accuracy_Score": acc_score, "Runtime": time_}
+	return {"Ensemble": name, "Meta_Classifier": "LogisticRegression", "Accuracy_Score": acc_score, "Runtime": time_}
 
 def add_subsemble(name, models, X_train, Y_train, X_test, Y_test):
 	# Establish and reset variables
