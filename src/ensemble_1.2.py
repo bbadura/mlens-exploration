@@ -147,6 +147,12 @@ def main():
 	X_test = test_df.drop(559, axis=1)
 	Y_test = test_df[559]
 
+	#feature engineering
+	poly1 = PolynomialFeatures(2)
+	X_train = poly1.fit_transform(X_train, Y_train)
+	poly2 = PolynomialFeatures(2)
+	X_test = poly2.fit_transform(X_test, Y_test)
+
 	#feature selection (currently only works on datasets that do not have named index fields)
 	selector = SelectKBest(f_classif, k=20)
 	X_train = selector.fit_transform(X_train, Y_train)
