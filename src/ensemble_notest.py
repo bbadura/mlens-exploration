@@ -156,7 +156,7 @@ def main():
 		for j in range(0,15):
 			#try out a new classifier
 			pipeline1 = Pipeline([
-				('dtc', DecisionTreeClassifier(max_features=random.randint(1,5),max_depth=random.randint(1,200),random_state=random.randint(1,5000)))
+				('dtc', DecisionTreeClassifier(max_features=random.randint(1,4),max_depth=random.randint(1,200),random_state=random.randint(1,5000)))
 			])
 			models.append(pipeline1)
 
