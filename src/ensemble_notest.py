@@ -131,16 +131,16 @@ def add_sequential(name, models, X_train, Y_train, X_test, Y_test):
 # Runs the program... add test datasets to this portion
 def main():
 	#read in data and parse
-	files = ['data/ecoli.csv']
+	files = ['data/blood.csv']
 	train_df = pd.read_csv(files[0])
-	file_output = "output/output_ecoli_new.txt"
+	file_output = "output/output_blood_new.txt"
 
 	#map classifier as binary
-	train_df['binaryClass'] = train_df["binaryClass"].map({'P': 0, 'N': 1}).astype(int)
+	train_df['donated'] = train_df['donated'].map({0: 0, 1: 1}).astype(int)
 
 	#separate models
-	X_train = train_df.drop('binaryClass', axis=1)
-	Y_train = train_df['binaryClass']
+	X_train = train_df.drop('donated', axis=1)
+	Y_train = train_df['donated']
 
 	X_train, X_test, Y_train, Y_test = train_test_split(X_train, Y_train, train_size=0.75, test_size=0.25)
 
