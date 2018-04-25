@@ -136,7 +136,7 @@ def main():
 	file_output = "output/output_iris_new.txt"
 
 	#map classifier as binary
-	train_df[4] = train_df[4].map({'Iris-setosa': 0, 'Iris-versicolor': 1, 'Iris-virginica': 2}).astype(int)
+	train_df[4] = train_df[4].map({'Iris-setosa': 0, 'Iris-versicolor': 1, 'Iris-virginica': 1}).astype(int)
 
 	#separate models
 	X_train = train_df.drop(4, axis=1)
