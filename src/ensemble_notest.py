@@ -131,16 +131,16 @@ def add_sequential(name, models, X_train, Y_train, X_test, Y_test):
 # Runs the program... add test datasets to this portion
 def main():
 	#read in data and parse
-	files = ['data/ionosphere.csv']
-	train_df = pd.read_csv(files[0], header=None)
-	file_output = "output/output_ionosphere_new.txt"
+	files = ['data/ecoli.csv']
+	train_df = pd.read_csv(files[0])
+	file_output = "output/output_ecoli_new.txt"
 
 	#map classifier as binary
-	train_df[34] = train_df[34].map({'b': 0, 'g': 1}).astype(int)
+	train_df['binaryClass'] = train_df["binaryClass"].map({'b': 0, 'g': 1}).astype(int)
 
 	#separate models
-	X_train = train_df.drop(34, axis=1)
-	Y_train = train_df[34]
+	X_train = train_df.drop('binaryClass', axis=1)
+	Y_train = train_df['binaryClass']
 
 	X_train, X_test, Y_train, Y_test = train_test_split(X_train, Y_train, train_size=0.75, test_size=0.25)
 
@@ -156,7 +156,7 @@ def main():
 		for j in range(0,15):
 			#try out a new classifier
 			pipeline1 = Pipeline([
-				('dtc', DecisionTreeClassifier(max_features=random.randint(1,20),max_depth=random.randint(1,200),random_state=random.randint(1,5000)))
+				('dtc', DecisionTreeClassifier(max_features=random.randint(1,5),max_depth=random.randint(1,200),random_state=random.randint(1,5000)))
 			])
 			models.append(pipeline1)
 
