@@ -136,7 +136,7 @@ def main():
 	file_output = "output/output_ecoli_new.txt"
 
 	#map classifier as binary
-	train_df['binaryClass'] = train_df["binaryClass"].map({'b': 0, 'g': 1}).astype(int)
+	train_df['binaryClass'] = train_df["binaryClass"].map({'P': 0, 'N': 1}).astype(int)
 
 	#separate models
 	X_train = train_df.drop('binaryClass', axis=1)
