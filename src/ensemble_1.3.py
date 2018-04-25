@@ -131,8 +131,8 @@ def add_sequential(name, models, X_train, Y_train, X_test, Y_test):
 def main():
 	#read in data and parse
 	files = ['data/obtrain.csv','data/obtest.csv']
-	train_df = pd.read_csv(files[0])
-	test_df = pd.read_csv(files[1])
+	train_df = pd.read_csv(files[0], header=None)
+	test_df = pd.read_csv(files[1], header=None)
 	combine = [train_df, test_df]
 	file_output = "output/output_ob_1.3.txt"
 
