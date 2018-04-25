@@ -157,7 +157,6 @@ def main():
 	ntests = 3
 	#print("------Feature Selection Complete------")
 	for i in range(iters):
-		output[i] = {}
 		models = []
 		for j in range(0,10):
 			#try out a new classifier
@@ -166,10 +165,6 @@ def main():
 			])
 			models.append(pipeline1)
 
-		output[i]['super'] = add_superlearner('super', models, X_train, Y_train, X_test, Y_test)
-		print("---------------  {}%  ---------------").format((100/(ntests*iters))*(1+(i*ntests)))
-
-		models = []
 		for j in range(0,10):
 			#try out a new classifier
 			pipeline1 = Pipeline([
@@ -177,10 +172,6 @@ def main():
 			])
 			models.append(pipeline1)
 
-		output[i]['sub'] = add_subsemble('sub', models, X_train, Y_train, X_test, Y_test)
-		print("---------------  {}%  ---------------").format((100/(ntests*iters))*(2+(i*ntests)))
-
-		models = []
 		for j in range(0,10):
 			#try out a new classifier
 			pipeline1 = Pipeline([
@@ -188,6 +179,13 @@ def main():
 			])
 			models.append(pipeline1)
 
+		output[i] = {}
+
+		# Function calls to create and test ensembles
+		output[i]['super'] = add_superlearner('super', models, X_train, Y_train, X_test, Y_test)
+		print("---------------  {}%  ---------------").format((100/(ntests*iters))*(1+(i*ntests)))
+		output[i]['sub'] = add_subsemble('sub', models, X_train, Y_train, X_test, Y_test)
+		print("---------------  {}%  ---------------").format((100/(ntests*iters))*(2+(i*ntests)))
 		output[i]['blend'] = add_blend('blend', models, X_train, Y_train, X_test, Y_test)
 		print("---------------  {}%  ---------------").format((100/(ntests*iters))*(3+(i*ntests)))
 
