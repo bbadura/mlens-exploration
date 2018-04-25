@@ -133,7 +133,7 @@ def main():
 	#read in data and parse
 	files = ['data/ionosphere.csv']
 	train_df = pd.read_csv(files[0], header=None)
-	file_output = "output/output_ionosphere.txt"
+	file_output = "output/output_ionosphere_new.txt"
 
 	#map classifier as binary
 	train_df[34] = train_df[34].map({'b': 0, 'g': 1}).astype(int)
@@ -153,52 +153,52 @@ def main():
 	#print("------Feature Selection Complete------")
 	for i in range(iters):
 		models = []
-		for j in range(0,10):
+		for j in range(0,15):
 			#try out a new classifier
 			pipeline1 = Pipeline([
-				('rfc', RandomForestClassifier(n_estimators=random.randint(50,150),max_features=random.randint(1,33),max_depth=random.randint(1,200),random_state=random.randint(1,5000)))
+				('dtc', DecisionTreeClassifier(max_features=random.randint(1,20),max_depth=random.randint(1,200),random_state=random.randint(1,5000)))
 			])
 			models.append(pipeline1)
 
 		output[i] = {}
 
 		# Function calls to create and test ensembles
-		output[i]['super_rfc'] = add_superlearner('super_rfc', models, X_train, Y_train, X_test, Y_test)
+		output[i]['super_dtc'] = add_superlearner('super_dtc', models, X_train, Y_train, X_test, Y_test)
 		print("---------------  10%  ---------------")
-		output[i]['sub_rfc'] = add_subsemble('sub_rfc', models, X_train, Y_train, X_test, Y_test)
+		output[i]['sub_dtc'] = add_subsemble('sub_dtc', models, X_train, Y_train, X_test, Y_test)
 		print("---------------  20%  ---------------")
-		output[i]['blend_rfc'] = add_blend('blend_rfc', models, X_train, Y_train, X_test, Y_test)
+		output[i]['blend_dtc'] = add_blend('blend_dtc', models, X_train, Y_train, X_test, Y_test)
 		print("---------------  30%  ---------------")
 
 		models = []
-		for j in range(0,10):
+		for j in range(0,15):
 			#try out a new classifier
 			pipeline1 = Pipeline([
-				('xgb', GradientBoostingClassifier(n_estimators=random.randint(50,150),max_features=random.randint(1,33),max_depth=random.randint(1,200),random_state=random.randint(1,5000)))
+				('knc', KNeighborsClassifier(n_neighbors=random.randint(1,20)))
 			])
 			models.append(pipeline1)
 
-		output[i]['super_xgb'] = add_superlearner('super_xgb', models, X_train, Y_train, X_test, Y_test)
+		output[i]['super_knc'] = add_superlearner('super_knc', models, X_train, Y_train, X_test, Y_test)
 		print("---------------  40%  ---------------")
-		output[i]['sub_xgb'] = add_subsemble('sub_xgb', models, X_train, Y_train, X_test, Y_test)
+		output[i]['sub_knc'] = add_subsemble('sub_knc', models, X_train, Y_train, X_test, Y_test)
 		print("---------------  50%  ---------------")
-		output[i]['blend_xgb'] = add_blend('blend_xgb', models, X_train, Y_train, X_test, Y_test)
+		output[i]['blend_knc'] = add_blend('blend_knc', models, X_train, Y_train, X_test, Y_test)
 		print("---------------  60%  ---------------")
 
-		models = []
-		for j in range(0,10):
-			#try out a new classifier
-			pipeline1 = Pipeline([
-				('ada', AdaBoostClassifier(n_estimators=random.randint(50,150),random_state=random.randint(1,5000)))
-			])
-			models.append(pipeline1)
+		# models = []
+		# for j in range(0,10):
+		# 	#try out a new classifier
+		# 	pipeline1 = Pipeline([
+		# 		('ada', AdaBoostClassifier(n_estimators=random.randint(50,150),random_state=random.randint(1,5000)))
+		# 	])
+		# 	models.append(pipeline1)
 
-		output[i]['super_ada'] = add_superlearner('super_ada', models, X_train, Y_train, X_test, Y_test)
-		print("---------------  70%  ---------------")
-		output[i]['sub_ada'] = add_subsemble('sub_ada', models, X_train, Y_train, X_test, Y_test)
-		print("---------------  80%  ---------------")
-		output[i]['blend_ada'] = add_blend('blend_ada', models, X_train, Y_train, X_test, Y_test)
-		print("---------------  90%  ---------------")
+		# output[i]['super_ada'] = add_superlearner('super_ada', models, X_train, Y_train, X_test, Y_test)
+		# print("---------------  70%  ---------------")
+		# output[i]['sub_ada'] = add_subsemble('sub_ada', models, X_train, Y_train, X_test, Y_test)
+		# print("---------------  80%  ---------------")
+		# output[i]['blend_ada'] = add_blend('blend_ada', models, X_train, Y_train, X_test, Y_test)
+		# print("---------------  90%  ---------------")
 
 	t = Texttable()
 	average_acc = {}
