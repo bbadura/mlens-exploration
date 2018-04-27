@@ -41,7 +41,7 @@ from mlens.ensemble import SequentialEnsemble
 from texttable import Texttable
 
 seed = 9880
-iters = 5
+iters = 5 ###### EDIT ######
 
 #Adds an ensemble composed of the same elements with different (randomized) parameters
 def add_superlearner(name, models, X_train, Y_train, X_test, Y_test):
@@ -131,38 +131,34 @@ def add_sequential(name, models, X_train, Y_train, X_test, Y_test):
 # Runs the program... add test datasets to this portion
 def main():
 	#read in data and parse
-	files = ['data/iris.csv']
-	train_df = pd.read_csv(files[0], header=None)
-	file_output = "output/output_iris_new.txt"
+	files = ['data/iris.csv'] ###### EDIT ######
+	train_df = pd.read_csv(files[0], header=None) ###### EDIT ######
+	file_output = "output/output_iris_new.txt" ###### EDIT ######
 
 	#map classifier as binary
-	train_df[4] = train_df[4].map({'Iris-setosa': 0, 'Iris-versicolor': 1, 'Iris-virginica': 1}).astype(int)
+	train_df[4] = train_df[4].map({'Iris-setosa': 0, 'Iris-versicolor': 1, 'Iris-virginica': 1}).astype(int) ###### EDIT ######
 
 	#separate models
-	X_train = train_df.drop(4, axis=1)
-	Y_train = train_df[4]
+	X_train = train_df.drop(4, axis=1) ###### EDIT ######
+	Y_train = train_df[4] ###### EDIT ######
 
 	X_train, X_test, Y_train, Y_test = train_test_split(X_train, Y_train, train_size=0.75, test_size=0.25)
-
-	#feature selection (currently only works on datasets that do not have named index fields)
-	# selector = SelectKBest(f_classif, k=20)
-	# X_train = selector.fit_transform(X_train, Y_train)
-	# X_test = X_test[selector.get_support(indices=True)]
 
 	output = [0] * iters
 	#print("------Feature Selection Complete------")
 	for i in range(iters):
 		models = []
-		for j in range(0,15):
+		for j in range(0,15): ###### EDIT ######
 			#try out a new classifier
 			pipeline1 = Pipeline([
-				('dtc', DecisionTreeClassifier(max_features=random.randint(1,4),max_depth=random.randint(1,200),random_state=random.randint(1,5000)))
+				('dtc', DecisionTreeClassifier(max_features=random.randint(1,4),max_depth=random.randint(1,200),random_state=random.randint(1,5000))) ###### EDIT ######
 			])
 			models.append(pipeline1)
 
 		output[i] = {}
 
 		# Function calls to create and test ensembles
+		###### EDIT NAMES AND PROGRESS ######
 		output[i]['super_dtc'] = add_superlearner('super_dtc', models, X_train, Y_train, X_test, Y_test)
 		print("---------------  10%  ---------------")
 		output[i]['sub_dtc'] = add_subsemble('sub_dtc', models, X_train, Y_train, X_test, Y_test)
@@ -171,34 +167,20 @@ def main():
 		print("---------------  30%  ---------------")
 
 		models = []
-		for j in range(0,15):
+		for j in range(0,15): ###### EDIT ######
 			#try out a new classifier
 			pipeline1 = Pipeline([
-				('knc', KNeighborsClassifier(n_neighbors=random.randint(1,20)))
+				('knc', KNeighborsClassifier(n_neighbors=random.randint(1,20))) ###### EDIT ######
 			])
 			models.append(pipeline1)
 
+		###### EDIT NAMES AND PROGRESS ######
 		output[i]['super_knc'] = add_superlearner('super_knc', models, X_train, Y_train, X_test, Y_test)
 		print("---------------  40%  ---------------")
 		output[i]['sub_knc'] = add_subsemble('sub_knc', models, X_train, Y_train, X_test, Y_test)
 		print("---------------  50%  ---------------")
 		output[i]['blend_knc'] = add_blend('blend_knc', models, X_train, Y_train, X_test, Y_test)
 		print("---------------  60%  ---------------")
-
-		# models = []
-		# for j in range(0,10):
-		# 	#try out a new classifier
-		# 	pipeline1 = Pipeline([
-		# 		('ada', AdaBoostClassifier(n_estimators=random.randint(50,150),random_state=random.randint(1,5000)))
-		# 	])
-		# 	models.append(pipeline1)
-
-		# output[i]['super_ada'] = add_superlearner('super_ada', models, X_train, Y_train, X_test, Y_test)
-		# print("---------------  70%  ---------------")
-		# output[i]['sub_ada'] = add_subsemble('sub_ada', models, X_train, Y_train, X_test, Y_test)
-		# print("---------------  80%  ---------------")
-		# output[i]['blend_ada'] = add_blend('blend_ada', models, X_train, Y_train, X_test, Y_test)
-		# print("---------------  90%  ---------------")
 
 	t = Texttable()
 	average_acc = {}
