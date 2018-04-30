@@ -27,3 +27,16 @@ The output is formatted in a 2-D chart and shows accuracy and the amount of time
 ***BEFORE RUNNING: Change the Makefile and Dockerfile to properly reflect the functions and datasets you want to reference. If you fail to do this, the program will not run properly.***
 
 Be patient when program is running. Depending on the number of models you run and the size of the datasets, the program can take upwards of 10 minutes to complete. The program will print out brief status updates, but they are more for checkpointing purposes and not accurate description of percentage complete.
+
+# FAQ
+**How do I run a test one data that doesn't have a specified test set?**
+*To run this program on a data without a test set, use the ensemble_notest.py file... this will use cross-validation as the primary source of calculating accuracy scores*
+
+**Why am I coming up with results that give and accuracy score of 1?**
+*A possible reason for this may be because you are using a dataset that has very few attributes. Dataset with few attributes typically don't perform very well*
+
+**Can I run more than one dataset at once?**
+*This program is only set up to run one dataset at a time (a train set and a test set are considered a single unit). To run multiple tests, you will have to run multiple instances of the program.*
+
+**I'm getting an error that says the number of features is too high...**
+*You need to change the random range in the num_features attribute to be at most the number of features that you are feeding into the models* 
