@@ -1,4 +1,4 @@
-# ople-project
+# MLEns Exploration
 Version control for ensembling project
 
 This GitHub provides neccesary building componets, test data sets, and results for the intern project regarding MLEnsemble, a python package for ensembling.
